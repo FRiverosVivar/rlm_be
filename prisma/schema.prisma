@@ -1,0 +1,66 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model CrewfareEvent {
+  id          String        @id @unique @default(uuid()) @db.Uuid
+  name        String
+  roomingList RoomingList[]
+  booking     Booking[]
+}
+
+model RoomingList {
+  roomingListId      String                @id @unique @db.Uuid
+  eventId            String
+  event              CrewfareEvent         @relation(fields: [eventId], references: [id])
+  hotelId            String
+  rfpName            String
+  cutOffDate         DateTime
+  status             RoomingListStatusEnum
+  agreement_type     AgreementTypeEnum
+  RoomingListBooking RoomingListBooking[]
+}
+
+model RoomingListBooking {
+  id            String      @id @unique @db.Uuid
+  roomingListId String
+  roomingList   RoomingList @relation(fields: [roomingListId], references: [roomingListId])
+  bookingId     String
+  booking       Booking     @relation(fields: [bookingId], references: [bookingId])
+}
+
+model Booking {
+  bookingId          String               @id @unique @db.Uuid
+  hotelId            String
+  eventId            String
+  event              CrewfareEvent        @relation(fields: [eventId], references: [id])
+  guestName          String
+  guestPhoneNumber   String
+  checkInDate        DateTime
+  checkOutDate       DateTime
+  RoomingListBooking RoomingListBooking[]
+}
+
+enum RoomingListStatusEnum {
+  Cancelled
+  Closed
+  Active
+}
+
+enum AgreementTypeEnum {
+  Leisure
+  Staff
+  Artist
+}

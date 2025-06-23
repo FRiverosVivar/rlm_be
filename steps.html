@@ -1,0 +1,552 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rooming List App - Checklist</title>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 20px;
+        line-height: 1.6;
+        background-color: #f8fafc;
+      }
+
+      .container {
+        background: white;
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      h1 {
+        color: #1e293b;
+        border-bottom: 3px solid #3b82f6;
+        padding-bottom: 10px;
+        margin-bottom: 30px;
+      }
+
+      h2 {
+        color: #334155;
+        background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+        padding: 12px 20px;
+        border-radius: 8px;
+        border-left: 4px solid #3b82f6;
+        margin: 25px 0 15px 0;
+      }
+
+      h3 {
+        color: #475569;
+        margin: 20px 0 10px 0;
+        font-size: 1.1em;
+      }
+
+      .checklist-item {
+        display: flex;
+        align-items: flex-start;
+        margin: 8px 0;
+        padding: 8px;
+        border-radius: 6px;
+        transition: background-color 0.2s;
+      }
+
+      .checklist-item:hover {
+        background-color: #f8fafc;
+      }
+
+      .checklist-item.completed {
+        background-color: #f0f9ff;
+        text-decoration: line-through;
+        color: #64748b;
+      }
+
+      input[type='checkbox'] {
+        margin-right: 12px;
+        margin-top: 2px;
+        width: 16px;
+        height: 16px;
+        cursor: pointer;
+      }
+
+      label {
+        cursor: pointer;
+        flex: 1;
+      }
+
+      .sub-item {
+        margin-left: 25px;
+      }
+
+      .progress-bar {
+        background: #e2e8f0;
+        border-radius: 10px;
+        height: 20px;
+        margin: 20px 0;
+        overflow: hidden;
+      }
+
+      .progress-fill {
+        background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+        height: 100%;
+        width: 0%;
+        transition: width 0.3s ease;
+        border-radius: 10px;
+      }
+
+      .progress-text {
+        text-align: center;
+        margin-top: 10px;
+        font-weight: 500;
+        color: #374151;
+      }
+
+      .emoji {
+        font-size: 1.2em;
+        margin-right: 8px;
+      }
+
+      .order-section {
+        background: #fef3c7;
+        border: 1px solid #f59e0b;
+        border-radius: 8px;
+        padding: 20px;
+        margin-top: 30px;
+      }
+
+      .order-section h3 {
+        color: #92400e;
+        margin-top: 0;
+      }
+
+      .order-item {
+        margin: 5px 0;
+        padding: 5px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>🏨 Full-Stack Rooming List Management App - Checklist</h1>
+
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <div class="progress-text" id="progressText">0% completado (0 de 0 tareas)</div>
+
+      <h2><span class="emoji">📋</span>Frontend Requirements</h2>
+
+      <h3>Rooming List Cards</h3>
+      <div class="checklist-item">
+        <input type="checkbox" id="figma" onchange="updateProgress()" />
+        <label for="figma">Implementar UI siguiendo el diseño de Figma</label>
+      </div>
+      <div class="checklist-item">
+        <input type="checkbox" id="cards" onchange="updateProgress()" />
+        <label for="cards">Mostrar rooming lists como cards agrupadas por evento</label>
+      </div>
+      <div class="checklist-item">
+        <input type="checkbox" id="scroll" onchange="updateProgress()" />
+        <label for="scroll">Implementar scroll horizontal para más de 3 rooming lists por evento</label>
+      </div>
+      <div class="checklist-item">
+        <input type="checkbox" id="card-info" onchange="updateProgress()" />
+        <label for="card-info">Mostrar información en cada card:</label>
+      </div>
+      <div class="checklist-item sub-item">
+        <input type="checkbox" id="rfp-name" onchange="updateProgress()" />
+        <label for="rfp-name">RFP Name (rfpName)</label>
+      </div>
+      <div class="checklist-item sub-item">
+        <input type="checkbox" id="agreement-type" onchange="updateProgress()" />
+        <label for="agreement-type">Agreement Type (agreement_type) en <strong>negrita</strong></label>
+      </div>
+      <div class="checklist-item sub-item">
+        <input type="checkbox" id="cutoff-date" onchange="updateProgress()" />
+        <label for="cutoff-date">Cut-off Date (cutOffDate) en la esquina superior derecha</label>
+      </div>
+      <div class="checklist-item sub-item">
+        <input type="checkbox" id="dynamic-dates" onchange="updateProgress()" />
+        <label for="dynamic-dates"
+          >Fechas calculadas dinámicamente (check-in más temprano → check-out más tardío)</label
+        >
+      </div>
+      <div class="checklist-item">
+        <input type="checkbox" id="view-bookings" onchange="updateProgress()" />
+        <label for="view-bookings">Botón "View Bookings" que loggee bookings en consola del navegador</label>
+      </div>
+      <div class="checklist-item">
+        <input type="checkbox" id="view-agreement" onchange="updateProgress()" />
+        <label for="view-agreement">Botón "View Agreement" con tooltip "Show Agreement as PDF"</label>
+      </div>
+
+      <h3>Filtros y Búsqueda</h3>
+      <div class="checklist-item">
+        <input type="checkbox" id="search-bar" onchange="updateProgress()" />
+        <label for="search-bar">Barra de búsqueda que filtre por:</label>
+      </div>
+      <div class="checklist-item sub-item">
+        <input type="checkbox" id="search-event" onchange="updateProgress()" />
+        <label for="search-event">Nombre del evento</label>
+      </div>
+      <div class="checklist-item sub-item">
+        <input type="checkbox" id="search-rfp" onchange="updateProgress()" />
+        <label for="search-rfp">RFP name (rfpName)</label>
+      </div>
+      <div class="checklist-item sub-item">
+        <input type="checkbox" id="search-agreement" onchange="updateProgress()" />
+        <label for="search-agreement">Agreement type (agreement_type)</label>
+      </div>
+      <div class="checklist-item">
+        <input type="checkbox" id="filter-panel" onchange="updateProgress()" />
+        <label for="filter-panel">Panel de filtros por status:</label>
+      </div>
+      <div class="checklist-item sub-item">
+        <input type="checkbox" id="filter-active" onchange="updateProgress()" />
+        <label for="filter-active">Active (Received)</label>
+      </div>
+      <div class="checklist-item sub-item">
+        <input type="checkbox" id="filter-closed" onchange="updateProgress()" />
+        <label for="filter-closed">Closed (Completed)</label>
+      </div>
+      <div class="checklist-item sub-item">
+        <input type="checkbox" id="filter-cancelled" onchange="updateProgress()" />
+        <label for="filter-cancelled">Cancelled (Archived)</label>
+      </div>
+      <div class="checklist-item">
+        <input type="checkbox" id="sorting" onchange="updateProgress()" />
+        <label for="sorting">Ordenamiento por cut-off date (ascendente/descendente)</label>
+      </div>
+
+      <h3>State Management</h3>
+      <div class="checklist-item">
+        <input type="checkbox" id="state-mgmt" onchange="updateProgress()" />
+        <label for="state-mgmt">Implementar gestión de estado con React Context/Redux Toolkit/Zustand</label>
+      </div>
+      <div class="checklist-item">
+        <input type="checkbox" id="optimization" onchange="updateProgress()" />
+        <label for="optimization">Optimizar rendimiento evitando re-renders innecesarios</label>
+      </div>
+      <div class="checklist-item">
+        <input type="checkbox" id="memoization" onchange="updateProgress()" />
+        <label for="memoization">Usar memoización o context apropiadamente</label>
+      </div>
+
+      <h3>Responsividad</h3>
+      <div class="checklist-item">
+        <input type="checkbox" id="responsive" onchange="updateProgress()" />
+        <label for="responsive">UI completamente responsiva (desktop, tablet, móvil)</label>
+      </div>
+      <div class="checklist-item">
+        <input type="checkbox" id="css-framework" onchange="updateProgress()" />
+        <label for="css-framework">Usar framework CSS (Tailwind CSS/Material-UI) o estilos propios</label>
+      </div>
+
+      <h2><span class="emoji">🗄️</span>Backend Requirements</h2>
+
+      <h3>Database Design</h3>
+      <div class="checklist-item">
+        <input type="checkbox" id="postgres-setup" onchange="updateProgress()" />
+        <label for="postgres-setup">Configurar base de datos PostgreSQL</label>
+      </div>
+      <div class="checklist-item">
+        <input type="checkbox" id="bookings-table" onchange="updateProgress()" />
+        <label for="bookings-table">Crear tabla <strong>Bookings</strong>:</label>
+      </div>
+      <div class="checklist-item sub-item">
+        <input type="checkbox" id="booking-id" onchange="updateProgress()" />
+        <label for="booking-id">bookingId (Unique identifier)</label>
+      </div>
+      <div class="checklist-item sub-item">
+        <input type="checkbox" id="hotel-id" onchange="updateProgress()" />
+        <label for="hotel-id">hotelId</label>
+      </div>
+      <div class="checklist-item sub-item">
+        <input type="checkbox" id="event-id" onchange="updateProgress()" />
+        <label for="event-id">eventId</label>
+      </div>
+      <div class="checklist-item sub-item">
+        <input type="checkbox" id="guest-name" onchange="updateProgress()" />
+        <label for="guest-name">guestName</label>
+      </div>
+      <div class="checklist-item sub-item">
+        <input type="checkbox" id="guest-phone" onchange="updateProgress()" />
+        <label for="guest-phone">guestPhoneNumber</label>
+      </div>
+      <div class="checklist-item sub-item">
+        <input type="checkbox" id="checkin-date" onchange="updateProgress()" />
+        <label for="checkin-date">checkInDate</label>
+      </div>
+      <div class="checklist-item sub-item">
+        <input type="checkbox" id="checkout-date" onchange="updateProgress()" />
+        <label for="checkout-date">checkOutDate</label>
+      </div>
+      <div class="checklist-item">
+        <input type="checkbox" id="rooming-bookings-table" onchange="updateProgress()" />
+        <label for="rooming-bookings-table">Crear tabla <strong>Rooming List Bookings</strong>:</label>
+      </div>
+      <div class="checklist-item sub-item">
+        <input type="checkbox" id="rlb-rooming-id" onchange="updateProgress()" />
+        <label for="rlb-rooming-id">roomingListId (Foreign key)</label>
+      </div>
+      <div class="checklist-item sub-item">
+        <input type="checkbox" id="rlb-booking-id" onchange="updateProgress()" />
+        <label for="rlb-booking-id">bookingId (Foreign key)</label>
+      </div>
+      <div class="checklist-item">
+        <input type="checkbox" id="rooming-lists-table" onchange="updateProgress()" />
+        <label for="rooming-lists-table">Crear tabla <strong>Rooming Lists</strong>:</label>
+      </div>
+      <div class="checklist-item sub-item">
+        <input type="checkbox" id="rl-rooming-id" onchange="updateProgress()" />
+        <label for="rl-rooming-id">roomingListId (Unique identifier)</label>
+      </div>
+      <div class="checklist-item sub-item">
+        <input type="checkbox" id="rl-event-id" onchange="updateProgress()" />
+        <label for="rl-event-id">eventId</label>
+      </div>
+      <div class="checklist-item sub-item">
+        <input type="checkbox" id="rl-hotel-id" onchange="updateProgress()" />
+        <label for="rl-hotel-id">hotelId</label>
+      </div>
+      <div class="checklist-item sub-item">
+        <input type="checkbox" id="rl-rfp-name" onchange="updateProgress()" />
+        <label for="rl-rfp-name">rfpName</label>
+      </div>
+      <div class="checklist-item sub-item">
+        <input type="checkbox" id="rl-cutoff" onchange="updateProgress()" />
+        <label for="rl-cutoff">cutOffDate</label>
+      </div>
+      <div class="checklist-item sub-item">
+        <input type="checkbox" id="rl-status" onchange="updateProgress()" />
+        <label for="rl-status">status ("Active", "Closed", "Cancelled")</label>
+      </div>
+      <div class="checklist-item sub-item">
+        <input type="checkbox" id="rl-agreement" onchange="updateProgress()" />
+        <label for="rl-agreement">agreement_type ("leisure", "staff", "artist")</label>
+      </div>
+      <div class="checklist-item">
+        <input type="checkbox" id="relationships" onchange="updateProgress()" />
+        <label for="relationships">Definir relaciones entre tablas</label>
+      </div>
+
+      <h3>API Development</h3>
+      <div class="checklist-item">
+        <input type="checkbox" id="nodejs-api" onchange="updateProgress()" />
+        <label for="nodejs-api">Desarrollar API RESTful con Node.js (Express/NestJS)</label>
+      </div>
+      <div class="checklist-item">
+        <input type="checkbox" id="db-endpoints" onchange="updateProgress()" />
+        <label for="db-endpoints">Crear endpoints para interacciones con base de datos</label>
+      </div>
+      <div class="checklist-item">
+        <input type="checkbox" id="rest-standards" onchange="updateProgress()" />
+        <label for="rest-standards">Seguir estándares REST para diseño de API limpia y predecible</label>
+      </div>
+      <div class="checklist-item">
+        <input type="checkbox" id="get-rooming-lists" onchange="updateProgress()" />
+        <label for="get-rooming-lists">Endpoint para obtener rooming lists</label>
+      </div>
+      <div class="checklist-item">
+        <input type="checkbox" id="get-bookings" onchange="updateProgress()" />
+        <label for="get-bookings">Endpoint para obtener bookings por rooming list</label>
+      </div>
+      <div class="checklist-item">
+        <input type="checkbox" id="insert-data" onchange="updateProgress()" />
+        <label for="insert-data">Endpoint para insertar datos (clearing + inserting)</label>
+      </div>
+
+      <h3>Funcionalidad Específica</h3>
+      <div class="checklist-item">
+        <input type="checkbox" id="insert-button" onchange="updateProgress()" />
+        <label for="insert-button">Botón "Insert Bookings and Rooming Lists" en frontend</label>
+      </div>
+      <div class="checklist-item">
+        <input type="checkbox" id="clear-data" onchange="updateProgress()" />
+        <label for="clear-data">API call que primero limpia datos existentes</label>
+      </div>
+      <div class="checklist-item">
+        <input type="checkbox" id="json-files" onchange="updateProgress()" />
+        <label for="json-files">Leer e insertar datos de archivos JSON:</label>
+      </div>
+      <div class="checklist-item sub-item">
+        <input type="checkbox" id="json-rlb" onchange="updateProgress()" />
+        <label for="json-rlb">rooming-list-bookings.json</label>
+      </div>
+      <div class="checklist-item sub-item">
+        <input type="checkbox" id="json-rl" onchange="updateProgress()" />
+        <label for="json-rl">rooming-lists.json</label>
+      </div>
+      <div class="checklist-item sub-item">
+        <input type="checkbox" id="json-bookings" onchange="updateProgress()" />
+        <label for="json-bookings">Bookings.json</label>
+      </div>
+      <div class="checklist-item">
+        <input type="checkbox" id="dynamic-cards" onchange="updateProgress()" />
+        <label for="dynamic-cards">Cards renderizadas dinámicamente desde base de datos</label>
+      </div>
+      <div class="checklist-item">
+        <input type="checkbox" id="view-bookings-api" onchange="updateProgress()" />
+        <label for="view-bookings-api">Botón "View Bookings" hace API call y loggea en consola</label>
+      </div>
+
+      <h2><span class="emoji">🔐</span>Authentication</h2>
+      <div class="checklist-item">
+        <input type="checkbox" id="jwt-auth" onchange="updateProgress()" />
+        <label for="jwt-auth">Proteger endpoints con autenticación JWT</label>
+      </div>
+
+      <h2><span class="emoji">🧪</span>Testing</h2>
+      <div class="checklist-item">
+        <input type="checkbox" id="unit-tests" onchange="updateProgress()" />
+        <label for="unit-tests">Escribir tests unitarios para API (mínimo 2 tests)</label>
+      </div>
+      <div class="checklist-item">
+        <input type="checkbox" id="testing-tools" onchange="updateProgress()" />
+        <label for="testing-tools">Usar Jest, Supertest o equivalente</label>
+      </div>
+
+      <h2><span class="emoji">🎯</span>Bonus Features (Opcionales)</h2>
+
+      <h3>Pagination/Infinite Scroll</h3>
+      <div class="checklist-item">
+        <input type="checkbox" id="pagination" onchange="updateProgress()" />
+        <label for="pagination">Implementar paginación o infinite scroll para cards</label>
+      </div>
+      <div class="checklist-item">
+        <input type="checkbox" id="large-datasets" onchange="updateProgress()" />
+        <label for="large-datasets">Manejar datasets grandes eficientemente</label>
+      </div>
+
+      <h3>Search Optimization</h3>
+      <div class="checklist-item">
+        <input type="checkbox" id="debounce" onchange="updateProgress()" />
+        <label for="debounce">Agregar funcionalidad debounce a barra de búsqueda</label>
+      </div>
+      <div class="checklist-item">
+        <input type="checkbox" id="avoid-excessive-calls" onchange="updateProgress()" />
+        <label for="avoid-excessive-calls">Evitar llamadas excesivas a API mientras se escribe</label>
+      </div>
+
+      <h3>Dockerization</h3>
+      <div class="checklist-item">
+        <input type="checkbox" id="dockerfile" onchange="updateProgress()" />
+        <label for="dockerfile">Crear Dockerfile para la aplicación</label>
+      </div>
+      <div class="checklist-item">
+        <input type="checkbox" id="docker-compose" onchange="updateProgress()" />
+        <label for="docker-compose">Crear docker-compose.yml para aplicación y base de datos</label>
+      </div>
+      <div class="checklist-item">
+        <input type="checkbox" id="easy-setup" onchange="updateProgress()" />
+        <label for="easy-setup">Setup fácil para desarrollo en containers</label>
+      </div>
+
+      <h2><span class="emoji">📋</span>Submission Guidelines</h2>
+      <div class="checklist-item">
+        <input type="checkbox" id="github-repo" onchange="updateProgress()" />
+        <label for="github-repo">Crear repositorio GitHub con código del proyecto</label>
+      </div>
+      <div class="checklist-item">
+        <input type="checkbox" id="run-instructions" onchange="updateProgress()" />
+        <label for="run-instructions">Instrucciones claras para ejecutar frontend y backend localmente</label>
+      </div>
+      <div class="checklist-item">
+        <input type="checkbox" id="documented-code" onchange="updateProgress()" />
+        <label for="documented-code">Código bien documentado</label>
+      </div>
+      <div class="checklist-item">
+        <input type="checkbox" id="readme" onchange="updateProgress()" />
+        <label for="readme">README.md completo con:</label>
+      </div>
+      <div class="checklist-item sub-item">
+        <input type="checkbox" id="setup-instructions" onchange="updateProgress()" />
+        <label for="setup-instructions">Instrucciones de setup</label>
+      </div>
+      <div class="checklist-item sub-item">
+        <input type="checkbox" id="design-overview" onchange="updateProgress()" />
+        <label for="design-overview">Overview del diseño</label>
+      </div>
+      <div class="checklist-item sub-item">
+        <input type="checkbox" id="architectural-decisions" onchange="updateProgress()" />
+        <label for="architectural-decisions">Explicaciones de decisiones arquitecturales clave</label>
+      </div>
+
+      <h2><span class="emoji">📁</span>Files Structure Checklist</h2>
+      <div class="checklist-item">
+        <input type="checkbox" id="frontend-setup" onchange="updateProgress()" />
+        <label for="frontend-setup">Frontend setup (React app)</label>
+      </div>
+      <div class="checklist-item">
+        <input type="checkbox" id="backend-setup" onchange="updateProgress()" />
+        <label for="backend-setup">Backend setup (Node.js + Express/NestJS)</label>
+      </div>
+      <div class="checklist-item">
+        <input type="checkbox" id="migration-scripts" onchange="updateProgress()" />
+        <label for="migration-scripts">Database migration scripts</label>
+      </div>
+      <div class="checklist-item">
+        <input type="checkbox" id="json-data-files" onchange="updateProgress()" />
+        <label for="json-data-files">JSON data files ready for insertion</label>
+      </div>
+      <div class="checklist-item">
+        <input type="checkbox" id="docker-files" onchange="updateProgress()" />
+        <label for="docker-files">Docker configuration files</label>
+      </div>
+      <div class="checklist-item">
+        <input type="checkbox" id="test-files" onchange="updateProgress()" />
+        <label for="test-files">Test files</label>
+      </div>
+      <div class="checklist-item">
+        <input type="checkbox" id="documentation" onchange="updateProgress()" />
+        <label for="documentation">Documentation (README.md)</label>
+      </div>
+
+      <div class="order-section">
+        <h3><span class="emoji">✅</span>Development Flow Suggested Order</h3>
+        <div class="order-item"><strong>1.</strong> Setup inicial: Base de datos PostgreSQL + estructura de tablas</div>
+        <div class="order-item"><strong>2.</strong> Backend básico: API endpoints fundamentales</div>
+        <div class="order-item"><strong>3.</strong> Frontend básico: Componentes y estructura inicial</div>
+        <div class="order-item"><strong>4.</strong> Integración: Conectar frontend con backend</div>
+        <div class="order-item"><strong>5.</strong> Funcionalidades avanzadas: Filtros, búsqueda, ordenamiento</div>
+        <div class="order-item"><strong>6.</strong> Autenticación: JWT implementation</div>
+        <div class="order-item"><strong>7.</strong> Testing: Unit tests para API</div>
+        <div class="order-item"><strong>8.</strong> Optimización: State management, responsividad</div>
+        <div class="order-item"><strong>9.</strong> Bonus features: Según tiempo disponible</div>
+        <div class="order-item"><strong>10.</strong> Documentation: README final y cleanup</div>
+      </div>
+    </div>
+
+    <script>
+      function updateProgress() {
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]')
+        const checkedBoxes = document.querySelectorAll('input[type="checkbox"]:checked')
+
+        const totalTasks = checkboxes.length
+        const completedTasks = checkedBoxes.length
+        const percentage = Math.round((completedTasks / totalTasks) * 100)
+
+        // Update progress bar
+        const progressFill = document.getElementById('progressFill')
+        const progressText = document.getElementById('progressText')
+
+        progressFill.style.width = percentage + '%'
+        progressText.textContent = `${percentage}% completado (${completedTasks} de ${totalTasks} tareas)`
+
+        // Update visual state of completed items
+        checkboxes.forEach((checkbox) => {
+          const item = checkbox.closest('.checklist-item')
+          if (checkbox.checked) {
+            item.classList.add('completed')
+          } else {
+            item.classList.remove('completed')
+          }
+        })
+      }
+
+      // Initialize progress on page load
+      updateProgress()
+    </script>
+  </body>
+</html>
