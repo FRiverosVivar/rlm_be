@@ -28,6 +28,19 @@
 
 ## Installation
 
+## Environment Setup
+
+Create a `.env` file in the root directory with the following environment variables:
+
+```env
+#Supabase URL
+SUPABASE_URL=https://zmnfepjogiiuyjddrkcb.supabase.co
+#Supabase Anon KEY
+SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InptbmZlcGpvZ2lpdXlqZGRya2NiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA2NDUwNTAsImV4cCI6MjA2NjIyMTA1MH0.C02klmSGcS_-ALwKPyly-bTEWmol9oMJHO3New7Tp7U
+#PostgreSQL connection url
+DATABASE_URL=postgresql://postgres:3n5CsxBAaxiJlM2R@db.zmnfepjogiiuyjddrkcb.supabase.co:5432/postgres
+```
+
 ```bash
 $ pnpm install
 ```
